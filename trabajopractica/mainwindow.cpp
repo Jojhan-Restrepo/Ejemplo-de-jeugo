@@ -7,7 +7,7 @@
 #include <QPixmap>
 #include <QGraphicsView>
 #include <QPushButton>
-
+#include <QObject>
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow) //La interfaz diseñada en Qt Designer
@@ -54,11 +54,14 @@ MainWindow::MainWindow(QWidget *parent)
     //connect(timer,SIGNAL(timeout()),this,SLOT(hmov(*bola)));
     connect(timer, &QTimer::timeout, [=]() {
         hmov(jug1);
-        muevejug(jug1);
+
     });
     timer->stop();
-
-
+    r1 = scene->addRect(0, 100, 100, 100, QPen(Qt::black), QBrush(Qt::blue));
+    obst.append(r1);
+    for(int i=0;i<3; i++){
+        obst.append(scene->addRect(100+(i*100),300,40,40,QPen(Qt::black), QBrush(Qt::black)));
+    }
 
 }
 
@@ -86,8 +89,11 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::hmov(Jugador *jug1)
 {
-}
-
-void MainWindow::muevejug(Jugador *jug1){
-    jug1->moveBy(5,0);
+    bool bandera = false;
+    for(int i=0;i<obst.length();i++){
+        if(jug1->collidesWithItem(obst.at(i))){
+            bool bandera=true;           
+            break;
+        }
+    }
 }

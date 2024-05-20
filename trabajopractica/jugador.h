@@ -29,5 +29,7 @@ public:
     void moveBy(int dx, int dy);
     //Simular caminar
     void setSprite(int dir);
+    void choque(int dx, int dy, bool bandera);
+    void movimiento(int dx, int dy);
 };
 #endif // JUGADOR_H

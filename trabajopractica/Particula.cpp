@@ -87,3 +87,14 @@ void Particula::movimiento()
         direction *= -100;
     }
 }
+void Particula::choque(int dx, int dy)
+{
+    posX += dx;
+    posY += dy;
+    qDebug() << posX << " "<<posY;
+    //qDebug() << "Tecla: " << x << " " <<sceneRect.right()<<" "<<sceneRect.left();
+    posX-=dx;
+    posY-=dy;
+
+    setPos(posX, posY);
+}

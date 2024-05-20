@@ -20,6 +20,7 @@ public:
 
     // Movimiento
     void moveBy(int dx, int dy);
+    void choque(int dx, int dy);
 private: //Podrían ser públicas
     qreal posX;
     qreal posY;

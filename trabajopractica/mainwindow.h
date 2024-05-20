@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 #include <QTimer>
+#include <QGraphicsScene>
+#include <QGraphicsView>
 #include "Particula.h"
 #include "jugador.h"
 QT_BEGIN_NAMESPACE
@@ -21,11 +23,13 @@ public:
 private slots:
     void on_pushButton_clicked(); //Se crea una vez vamos al slot
     void hmov(Jugador *jug1);
-    void muevejug(Jugador *jug1);
+
 
 private:
     Ui::MainWindow *ui;
     QTimer *timer;
+    QGraphicsRectItem *r1;
+    QList<QGraphicsRectItem*> obst;
 };
 #endif // MAINWINDOW_H
 

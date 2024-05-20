@@ -1,4 +1,6 @@
 #include "jugador.h"
+#include "mainwindow.h"
+#include "Particula.h"
 #include <QGraphicsScene>
 #include <QLabel>
 #include <QPixmap>
@@ -7,46 +9,37 @@
 #include <QGraphicsView>
 #include <QPushButton>
 
-//Definir el jugador y la imgen
-Jugador::Jugador(QGraphicsView *view,QGraphicsItem *im):QGraphicsPixmapItem(im)
+// Definir el jugador y la imagen
+Jugador::Jugador(QGraphicsView *view, QGraphicsItem *im) : QGraphicsPixmapItem(im)
 {
     setPixmap(QPixmap("C:/Users/JojhanSebastian/Downloads/trabajopractica/sprites.png"));
-    x=200;
-    y=200;
-    setFlag(QGraphicsItem::ItemIsFocusable); //Inicialización opcional para decir que tiene el foco para eventos del teclado
+    x = 200;
+    y = 200;
+    setFlag(QGraphicsItem::ItemIsFocusable);
     viewRect = view->size();
-    QRectF sceneRect = view->sceneRect();
-    qDebug() << viewRect << " "<< sceneRect << " "<<view->size().width();
     spriteSheet.load("C:/Users/JojhanSebastian/Downloads/trabajopractica/sprites.png");
 
     QPixmap sprite = spriteSheet.copy(spriteX, spriteY, spriteWidth, spriteHeight);
     setPixmap(sprite);
-
 }
-
-
 
 void Jugador::keyPressEvent(QKeyEvent *event)
 {
-    //Manejo del evento de tecla
-    switch(event->key()) {
+    switch (event->key())
+    {
     case Qt::Key_A:
-        //qDebug() << "Tecla: " << event->key();
         moveBy(-5, 0);
         setSprite(60);
         break;
     case Qt::Key_D:
-        //qDebug() << "Tecla: " << event->key();
         moveBy(5, 0);
         setSprite(120);
         break;
     case Qt::Key_W:
-        //qDebug() << "Tecla: " << event->key();
         moveBy(0, -5);
         setSprite(180);
         break;
     case Qt::Key_S:
-        //qDebug() << "Tecla: " << event->key();
         moveBy(0, 5);
         setSprite(0);
         break;
@@ -57,25 +50,61 @@ void Jugador::keyPressEvent(QKeyEvent *event)
 
 void Jugador::moveBy(int dx, int dy)
 {
-    x += dx;
-    y += dy;
-    qDebug() << x << " "<<y;
-    //qDebug() << "Tecla: " << x << " " <<sceneRect.right()<<" "<<sceneRect.left();
-    if (x>viewRect.width()-50||x<0){
-        x-=dx;
-    }
-    if (y>300||y<0){
-        y-=dy;
-    }
-    setPos(x, y);
-}
+    qreal newX = x + dx;
+    qreal newY = y + dy;
+    setPos(newX, newY);
 
+    if (newX > viewRect.width() - 50 || newX < 0) {
+        newX -= dx;
+    }
+    if (newY > 300 || newY < 0) {
+        newY -= dy;
+    }
+
+    bool collisionDetected = false;
+
+    for (QGraphicsItem *item : collidingItems())
+    {
+        if (dynamic_cast<QGraphicsRectItem *>(item))
+        {
+            collisionDetected = true;
+            break;
+        }
+    }
+
+    if (collisionDetected)
+    {
+        setPos(x, y); // Revertir a la posición anterior
+    }
+    else
+    {
+        x = newX;
+        y = newY;
+    }
+
+}
 void Jugador::setSprite(int dir)
 {
-    spriteX = 60*cont;
+    spriteX = 60 * cont;
     spriteY = dir;
     QPixmap sprite = spriteSheet.copy(spriteX, spriteY, spriteWidth, spriteHeight);
     setPixmap(sprite);
     cont++;
-    if(cont==7){cont=0;}
+    if (cont == 7)
+    {
+        cont = 0;
+    }
 }
+
+void Jugador::choque(int dx, int dy, bool bandera)
+{
+    x += dx;
+    y += dy;
+    if (bandera == true)
+    {
+        y -= dy;
+        x -= dx;
+    }
+    setPos(x, y);
+}
+
